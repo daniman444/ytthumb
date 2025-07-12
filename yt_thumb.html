@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YT Thumb – YouTube Thumbnail Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4b72ff;
+      --accent: #ffb347;
+      --bg-color: #ffffff;
+      --text-color: #222222;
+      --card-bg: #f9f9fc;
+      --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    }
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    body {
+      font-family: 'Urbanist', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 1rem;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0;
+    }
+    .logo {
+      font-family: 'Urbanist', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .logo span:first-child {
+      background: #4b72ff;
+      color: white;
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin: 0.5rem 0 2rem;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.75rem 1.2rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #355de6;
+    }
+    .thumb-box img {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 8px;
+      display: block;
+      margin: 1rem 0;
+    }
+    .thumb-box button {
+      background: var(--accent);
+      color: #000;
+    }
+    .thumb-box button:hover {
+      background: #ffa726;
+    }
+    .history-entry {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #ddd;
+    }
+    .history-entry img {
+      width: 60px;
+      height: 40px;
+      border-radius: 4px;
+    }
+    .info-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .info-section li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .info-section li::before {
+      content: '\f058';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+    .adsense-placeholder {
+      width: 100%;
+      height: 90px;
+      background: #eef0f3;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      font-style: italic;
+      margin: 1rem 0;
+    }
+    footer {
+      padding: 2rem;
+      background: #f2f4f7;
+      color: #333;
+      border-radius: 16px;
+    }
+    footer h3 {
+      margin-top: 0;
+    }
+    footer section {
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 600px) {
+      .input-group {
+        flex-direction: column;
+      }
+      button {
+        width: 100%;
+      }
+      .thumb-box img {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span>YT</span>
+      <span style="margin-left: 0.4em;">YT Thumb</span>
+    </div>
+  </header>
+  <div class="container">
+    <h1>Download YouTube Thumbnails Instantly</h1>
+
+    <div class="card input-box">
+      <div class="input-group">
+        <input type="text" id="youtube-url" placeholder="Paste YouTube video link...">
+        <button onclick="fetchThumbnails()">Fetch</button>
+      </div>
+    </div>
+
+    <div class="adsense-placeholder">Top Banner Ad (728x90)</div>
+
+    <div id="thumbnail-results" class="card"></div>
+
+    <div class="adsense-placeholder">Inline Ad (300x250)</div>
+
+    <div class="card">
+      <h2>Download History</h2>
+      <div id="history-list"></div>
+    </div>
+
+    <div class="adsense-placeholder">Bottom Ad (320x100)</div>
+
+    <div class="card info-section">
+      <h2>Why SnapThumb?</h2>
+      <ul>
+        <li>Instant HD thumbnail preview</li>
+        <li>Rename file before download</li>
+        <li>Local download history</li>
+        <li>No redirects or popups</li>
+        <li>AdSense-friendly layout</li>
+      </ul>
+    </div>
+
+    <footer class="card">
+      <section>
+        <h3>About Us</h3>
+        <p>SnapThumb is a free and simple YouTube thumbnail downloader designed for creators, editors, and marketers. We believe in simplicity and speed—no signups, no data tracking. Just paste, preview, and download high-quality thumbnails in seconds.</p>
+      </section>
+      <section>
+        <h3>FAQ</h3>
+        <ul>
+          <li><strong>Q:</strong> Is SnapThumb free to use?<br><strong>A:</strong> Yes, 100% free. No accounts or payments needed.</li>
+          <li><strong>Q:</strong> What formats are supported?<br><strong>A:</strong> JPG thumbnails in different qualities: Max, HD, and Medium.</li>
+          <li><strong>Q:</strong> Is this tool safe?<br><strong>A:</strong> Absolutely. No personal data is collected or stored.</li>
+        </ul>
+      </section>
+    </footer>
+  </div>
+
+  <script>
+    function extractVideoID(url) {
+      const match = url.match(/(?:v=|\.be\/|embed\/)([\w-]{11})/);
+      return match ? match[1] : null;
+    }
+
+    function fetchThumbnails() {
+      const input = document.getElementById('youtube-url').value;
+      const id = extractVideoID(input);
+      if (!id) return alert('Invalid YouTube link');
+
+      const qualities = ['maxresdefault', 'hqdefault', 'mqdefault'];
+      const container = document.getElementById('thumbnail-results');
+      container.innerHTML = '';
+
+      qualities.forEach(q => {
+        const url = `https://img.youtube.com/vi/${id}/${q}.jpg`;
+        const defaultName = `${id}-${q}.jpg`;
+        const box = document.createElement('div');
+        box.className = 'thumb-box';
+        box.innerHTML = `
+          <img src="${url}" alt="${q}" />
+          <button onclick="promptRenameAndDownload('${url}', '${defaultName}')">Download ${q.toUpperCase()}</button>
+        `;
+        container.appendChild(box);
+      });
+    }
+
+    async function promptRenameAndDownload(url, defaultName) {
+      try {
+        const customName = prompt("Name your thumbnail file:", defaultName);
+        if (!customName) return;
+
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = customName.endsWith('.jpg') ? customName : `${customName}.jpg`;
+        a.click();
+        URL.revokeObjectURL(blobUrl);
+
+        addToHistory(customName, url);
+      } catch (error) {
+        alert('Download failed.');
+      }
+    }
+
+    function addToHistory(name, url) {
+      const history = JSON.parse(localStorage.getItem('snapThumbHistory')) || [];
+      history.unshift({ name, url });
+      localStorage.setItem('snapThumbHistory', JSON.stringify(history.slice(0, 10)));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem('snapThumbHistory')) || [];
+      const list = document.getElementById('history-list');
+      list.innerHTML = '';
+      history.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'history-entry';
+        div.innerHTML = `
+          <div>
+            <img src="${entry.url}" alt="thumb" />
+            <span>${entry.name}</span>
+          </div>
+          <a href="${entry.url}" download="${entry.name}" class="btn">Download</a>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.onload = () => renderHistory();
+  </script>
+</body>
+</html>
